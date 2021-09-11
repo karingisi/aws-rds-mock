@@ -22,7 +22,6 @@ func (m mockRDSClient) DescribeDBInstances(*rds.DescribeDBInstancesInput) (*rds.
 }
 
 var _ = Describe("Rds", func() {
-
 	Describe("DescribeMyRDSInstances()", func() {
 		Context("Non existing Resource Identifier", func() {
 			It("should return empty DescribeDBInstancesOutput{}", func() {
@@ -40,11 +39,11 @@ var _ = Describe("Rds", func() {
 		Context("Existing Resource Identifier", func() {
 			It("Should return DescribeDBInstancesOutput", func() {
 				mockedOutput := &rds.DescribeDBInstancesOutput{DBInstances: []*rds.DBInstance{{DBInstanceArn: aws.String("RandomDBInstanceArn")}}}
-				myClient := internal.RDSClient{
+				rdsClient := internal.RDSClient{
 					Client: mockRDSClient{DescribeDBInstancesOutput: mockedOutput},
 				}
 				mockedInput := &rds.DescribeDBInstancesInput{DBInstanceIdentifier: aws.String("random-rds")}
-				actual, _ := myClient.DescribeMyRDSInstances(mockedInput)
+				actual, _ := rdsClient.DescribeMyRDSInstances(mockedInput)
 				expected := mockedOutput
 				Expect(actual).To(Equal(expected))
 			})
@@ -52,11 +51,11 @@ var _ = Describe("Rds", func() {
 
 		Context("Nil Resource Identifier", func() {
 			It("Should return error", func() {
-				myClient := internal.RDSClient{
+				rdsClient := internal.RDSClient{
 					Client: mockRDSClient{Error: errors.New("some error")},
 				}
 				mockedInput := &rds.DescribeDBInstancesInput{}
-				_, err := myClient.DescribeMyRDSInstances(mockedInput)
+				_, err := rdsClient.DescribeMyRDSInstances(mockedInput)
 				Expect(err).To(Equal(errors.New("some error")))
 			})
 		})
