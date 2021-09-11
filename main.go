@@ -17,12 +17,13 @@ func main() {
 	input := &rds.DescribeDBInstancesInput{
 		DBInstanceIdentifier: aws.String(internal.DBIdentifier),
 	}
-
-	r, err := internal.DescribeMyRDSInstances(client, internal.DBIdentifier, input)
+	c := internal.RDSClient{
+		Client: client,
+	}
+	r, err := c.DescribeMyRDSInstances(input)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Println(r)
-	fmt.Println("Mock Project")
 }
